@@ -1,0 +1,89 @@
+{% load static %}
+
+<div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <form method="post" action="{% url 'create_event' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="createEventLabel">Create New Event</h5>
+          <button type="button" class="btn btn-light ms-auto" data-bs-dismiss="modal" aria-label="Close">
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="eventName" class="form-label">Event Name</label>
+            <input type="text" name="name" id="eventName" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="eventDescription" class="form-label">Description</label>
+            <textarea name="description" id="eventDescription" class="form-control" rows="4" required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="eventDate" class="form-label">Date</label>
+            <input type="date" name="date" id="eventDate" class="form-control" required>
+          </div>
+
+          <div class="mb-3 row">
+            <div class="col-md-6">
+              <label for="eventStartTime" class="form-label">Start Time</label>
+              <input type="time" name="start_time" id="eventStartTime" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <input class="form-check-input m-0" type="checkbox" id="hasEndTime" name="has_end_time">
+                <label class="form-label mb-0" for="hasEndTime">Include End Time</label>
+              </div>
+              <input type="time" name="end_time" id="eventEndTime" class="form-control" disabled>
+            </div>
+          </div>
+
+          <hr>
+
+          <h6 class="mb-3">Event Location</h6>
+
+          <div class="mb-2">
+            <label for="street" class="form-label">Street</label>
+            <input type="text" name="street" id="street" class="form-control" required>
+          </div>
+
+          <div class="mb-2">
+            <label for="city" class="form-label">City</label>
+            <input type="text" name="city" id="city" class="form-control" required>
+          </div>
+
+          <div class="mb-2">
+            <label for="state" class="form-label">State</label>
+            <input type="text" name="state" id="state" class="form-control" required>
+          </div>
+
+          <div class="mb-2">
+            <label for="zip_code" class="form-label">Zip Code</label>
+            <input type="text" name="zip_code" id="zip_code" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const checkbox = document.getElementById('hasEndTime');
+  const endTimeField = document.getElementById('eventEndTime');
+
+  checkbox.addEventListener('change', function () {
+    endTimeField.disabled = !this.checked;
+    if (!this.checked) {
+      endTimeField.value = '';
+    }
+  });
+</script>

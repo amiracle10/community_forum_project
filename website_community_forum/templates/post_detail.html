@@ -1,0 +1,116 @@
+{% extends "components/base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5 d-flex flex-column align-items-center">
+  <div class="card reddit-card p-4 mb-4" style="width: 100%; max-width: 720px;">
+    <h3>{{ post.title }}</h3>
+    <p class="mb-1">
+      By <strong>{{ post.author.username }}</strong> • {{ post.created_at|date:"M d, Y - g:i A" }}
+    </p>
+    <p class="mb-3">{{ post.body }}</p>
+
+    <div class="d-flex justify-content-between align-items-center">
+      <span class="badge bg-secondary">{{ post.category }}</span>
+      <div class="d-flex gap-2">
+        {% if user.is_authenticated %}
+          <button class="btn btn-sm btn-outline-info" onclick="toggleReplyForm('reply-to-post')"><i class="bi bi-reply"></i> Reply</button>
+        {% endif %}
+        {% if user == post.author %}
+          <form method="post" action="{% url 'delete_post' post.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash3"></i> Delete</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if user.is_authenticated %}
+      <form method="post" id="reply-to-post" class="mt-3 d-none">
+        {% csrf_token %}
+        <input type="hidden" name="parent_id" value="">
+        <div class="mb-3">
+          <textarea name="content" class="form-control" rows="3" placeholder="Reply to post..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-info"><i class="bi bi-reply"></i> Submit Reply</button>
+      </form>
+    {% endif %}
+  </div>
+
+  <div class="card bg-dark text-white p-4" style="width: 100%; max-width: 720px;">
+    <h4>Replies</h4>
+    <ul class="list-unstyled mb-3">
+      {% for reply in replies %}
+        <li class="mb-2 pb-2">
+          <div class="d-flex justify-content-between align-items-start border p-3">
+            <div>
+              <strong>{{ reply.user.username }}</strong>
+              <!-- {% if reply.parent %} -->
+                <!-- <div class="text-info small">Replies to {{ reply.parent.user.username }}</div> -->
+              <!-- {% endif %} -->
+              <small class="text-muted  d-block">– {{ reply.created_at|date:"g:i A" }}</small>
+              <p class="mb-0">{{ reply.content }}</p>
+            </div>
+            <div class="ms-2 d-flex gap-2">
+              {% if user.is_authenticated %}
+                <button class="btn btn-sm btn-outline-info" onclick="toggleReplyForm('reply-to-{{ reply.id }}')"><i class="bi bi-reply"></i> Reply</button>
+              {% endif %}
+              {% if user == reply.user %}
+                <form method="post" action="{% url 'delete_reply' reply.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash3"></i> Delete</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+
+          {% if user.is_authenticated %}
+            <form method="post" id="reply-to-{{ reply.id }}" class="mt-2 d-none">
+              {% csrf_token %}
+              <input type="hidden" name="parent_id" value="{{ reply.id }}">
+              <div class="mb-2">
+                <textarea name="content" class="form-control" rows="2" placeholder="Reply to {{ reply.user.username }}" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-sm btn-info"><i class="bi bi-reply"></i> Submit Reply</button>
+            </form>
+          {% endif %}
+
+          {% if reply.children %}
+            <ul class="list-unstyled mt-2  p-3">
+              {% for child in reply.temp_children %}
+                <li class="mb-2 border p-3">
+                  <strong><i class="bi bi-arrow-return-right"></i> {{ child.user.username }}</strong>
+                  <!-- <div class="text-info small">Replies to {{ child.parent.user.username }}</div> -->
+                  <small class="text-muted d-block">– {{ child.created_at|date:"g:i A" }}</small>
+                  <p class="mb-0">{{ child.content }}</p>
+                  <div class="d-flex gap-2 mt-1">
+                    
+                    {% if user == child.user %}
+                      <form method="post" action="{% url 'delete_reply' child.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash3"></i> Delete</button>
+                      </form>
+                    {% endif %}
+                  </div>
+               
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </li>
+      {% empty %}
+        <li class="text-muted">No replies yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<script>
+  function toggleReplyForm(id) {
+    const form = document.getElementById(id);
+    if (form) {
+      form.classList.toggle('d-none');
+    }
+  }
+</script>
+{% endblock %}

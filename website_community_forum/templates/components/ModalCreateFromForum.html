@@ -1,0 +1,32 @@
+{% load static %}
+
+<div class="modal fade" id="createForumPostModal" tabindex="-1" aria-labelledby="discussion-modal" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="discussion-modal">Create a New Discussion in {{ category.name }}</h1>
+        <button type="button" class="btn btn-light ms-auto" data-bs-dismiss="modal" aria-label="Close">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="forum-discussion-form" method="post" action="{% url 'post_create' %}">
+          {% csrf_token %}
+          <input type="hidden" name="category_id" value="{{ category.id }}">
+
+          <label for="title">Discussion Title:</label>
+          <input type="text" id="title" name="title" class="form-control" required>
+
+          <hr>
+          <label for="body">Discussion Body:</label>
+          <textarea id="body" name="body" rows="12" class="form-control" maxlength="1000" required></textarea>
+          <small id="char-count" class="text-muted">0 / 1000</small>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success">Start Discussion</button>
+      </div>
+        </form>
+    </div>
+  </div>
+</div>

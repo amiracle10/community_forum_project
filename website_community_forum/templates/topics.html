@@ -1,0 +1,105 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- <div class="container mt-4 d-flex flex-column align-items-center">
+  <h2 class="text-white mb-4">Popular Topics</h2>
+
+  {% for post in posts %}
+    <div class="card reddit-card p-4 mb-4" style="width: 100%; max-width: 720px;">
+      <a href="{% url 'post_detail' post.id %}" class="text-white text-decoration-none">
+        <h4 class="mb-2">{{ post.title }}</h4>
+      </a>
+      <p class="mb-2 text-white-50">{{ post.body|truncatechars:120 }}</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <small class="text-white-50">
+          {{ post.comment_count }} comments • by {{ post.author.username }}
+        </small>
+        <span class="badge bg-secondary">{{ post.category }}</span>
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-white-50">No posts yet.</p>
+  {% endfor %}
+</div> -->
+
+<div class="text-center mb-5 container-forum-info">
+  <h1 class="display-4">Explore all our Forums</h1>
+  <p class="lead">Browse discussions, share your thoughts, and explore new interests!</p>
+</div>
+
+<div class="container-xxl">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm h-100">
+            <img class="card-img-top" src="{% static 'img/tech.jpg' %}" alt="Card image cap">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title"><i class="bi bi-laptop"></i> Technology</h3>
+              <p class="card-text">Discussions on the latest in tech, gadgets, software, and innovations.</p>
+              <a href="{% url 'forum_category' category_slug='technology' %}" class="btn btn-primary mt-auto">Technology</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm h-100">
+            <img class="card-img-top" src="{% static 'img/hobbies.jpg' %}" alt="Card image cap">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title"><i class="bi bi-brush"></i> Hobbies</h3>
+              <p class="card-text">Join discussions about photography, painting, gaming, and other creative activities.</p>
+              <a href="{% url 'forum_category' category_slug='hobbies' %}" class="btn btn-primary mt-auto">Hobbies</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm h-100">
+            <img class="card-img-top" src="{% static 'img/career.jpg' %}" alt="Card image cap">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title"><i class="bi bi-briefcase"></i> Career Development</h3>
+              <p class="card-text">Learn about job opportunities, career advice, and self-improvement.</p>
+              <a href="{% url 'forum_category' category_slug='career-development' %}" class="btn btn-primary mt-auto">Career Dev.</a>
+            </div>
+          </div>
+        </div>
+    </div>
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm h-100">
+            <img class="card-img-top" src="{% static 'img/wellness.jpg' %}" alt="Card image cap">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title"><i class="bi bi-heart"></i> Wellness</h3>
+              <p class="card-text">Share tips and stories about maintaining mental and physical well-being.</p>
+              <a href="{% url 'forum_category' category_slug='wellness' %}" class="btn btn-primary mt-auto">Wellness</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm h-100">
+            <img class="card-img-top" src="{% static 'img/finance.jpg' %}" alt="Card image cap">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title"><i class="bi bi-wallet"></i> Personal Finance</h3>
+              <p class="card-text">Discuss budgeting, saving, investing, and financial goals.</p>
+              <a href="{% url 'forum_category' category_slug='finance' %}" class="btn btn-primary mt-auto">Personal Finance</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm h-100">
+            <img class="card-img-top" src="{% static 'img/education.jpg' %}" alt="Card image cap">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title"><i class="bi bi-book"></i> Education</h3>
+              <p class="card-text">Talk about learning strategies, course experiences, and academic growth.</p>
+              <a href="{% url 'forum_category' category_slug='education' %}" class="btn btn-primary mt-auto">Education</a>
+            </div>
+          </div>
+        </div>
+      
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}

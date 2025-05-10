@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.pyc
+
+# Django migrations
+**/migrations/
+!**/migrations/__init__.py
+
+# Virtual env
+venv/
+ENV/
+env/
+.venv/
+
+# System
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# Static files collected
+staticfiles/
+
+# Local settings
+*.local
+*.env
+.env

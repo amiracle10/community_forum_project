@@ -1,0 +1,43 @@
+{% load static %}
+
+<div class="modal fade" id="createPostModal" tabindex="-1" aria-labelledby="discussion-modal" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="discussion-modal">Create a New Discussion</h1>
+        <button type="button" class="btn btn-light ms-auto" data-bs-dismiss="modal" aria-label="Close">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="discussion-form" method="post" action="{% url 'post_create' %}">
+          {% csrf_token %}
+          {% if category %}
+            <input type="hidden" name="category_id" value="{{ category.id }}">
+          {% else %}
+            <label for="category">Discussion Category:</label>
+            <select id="category" name="category_id" class="form-select" required>
+              <option value="" disabled selected hidden>Select a category</option>
+              {% for cat in categories %}
+                <option value="{{ cat.id }}">{{ cat.name }}</option>
+              {% endfor %}
+            </select>
+            <hr>
+          {% endif %}
+
+          <label for="title">Discussion Title:</label>
+          <input type="text" id="title" name="title" class="form-control" required>
+
+          <hr>
+          <label for="body">Discussion Body:</label>
+          <textarea id="body" name="body" rows="12" class="form-control" maxlength="1000" required></textarea>
+          <small id="char-count" class="text-muted">0 / 1000</small>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success">Start Discussion</button>
+      </div>
+        </form>
+    </div>
+  </div>
+</div>

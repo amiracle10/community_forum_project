@@ -1,0 +1,42 @@
+{% extends 'components/base.html' %}
+{% load static %}
+{% block title %}Upcoming Events{% endblock %}
+
+{% block content %}
+<div class="container py-5 d-flex flex-column align-items-center">
+  <h2 class="text-white mb-4 text-center">Upcoming Events</h2>
+
+  {% for event in events %}
+    <div class="card reddit-card mb-4 p-3" style="width: 100%; max-width: 720px;">
+      <h4 class="mb-2">{{ event.title }}</h4>
+      <p class="mb-2">{{ event.description }}</p>
+      <p><strong>Date:</strong> {{ event.event_date }}</p>
+      <p>
+        <strong>Time:</strong> 
+        {{ event.start_time }}
+        {% if event.end_time %} - {{ event.end_time }}
+        {% else %} (End time not specified)
+        {% endif %}
+      </p>
+      <p>
+        <strong>Location:</strong> 
+        {{ event.street }}, {{ event.city }}, {{ event.state }} {{ event.zip_code }}
+      </p>
+    </div>
+  {% empty %}
+    <p class="text-muted">No upcoming events.</p>
+  {% endfor %}
+</div>
+
+{% if user.is_authenticated %}
+  <div class="position-fixed" style="bottom: 3.5rem; right: 3.5rem; z-index: 1050;">
+    <button class="btn btn-info rounded-circle shadow"
+            data-bs-toggle="modal" data-bs-target="#createEventModal"
+            title="Create Event" style="width: 52px; height: 52px;">
+      <i class="fa fa-calendar-plus fa-lg"></i>
+    </button>
+  </div>
+{% endif %}
+
+{% include "components/ModalCreateEvent.html" %}
+{% endblock %}
