@@ -26,10 +26,22 @@ Home - Community Forum
     
 {% endif %}
 
-<div class="text-center mb-5 container-forum-info">
+<!-- <div class="text-center mb-5 container-forum-info">
   <h1 class="display-4">Welcome to the Community Forum</h1>
   <p class="lead">Stay connected, share ideas, and join the conversation!</p>
+</div> -->
+<div class="text-center mb-5 container-forum-info">
+{% if not user.is_authenticated %}
+<h1 class="display-4">Welcome to the Community Forum</h1>
+<p class="lead">Where you can connect, share, and discuss with others.</p>
+    <p>To join the conversation, please log in or create an account:</p>
+    <a href="/login" class="btn btn-primary">Login</a>
+    <a href="/register" class="btn btn-secondary">Create Account</a>
+{% else %}
+    <p>Welcome back, {{ user.username }}! Feel free to join the conversation.</p>
+{% endif %}
 </div>
+
 
 <div class="container mt-3">
   

@@ -22,7 +22,7 @@ class Post(models.Model):
     body = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts')
     created_at = models.DateTimeField(auto_now_add=True)
-    replies_set = models.ForeignKey('Reply', related_name='posts', on_delete=models.CASCADE, default=1)  
+    
     def __str__(self):
         return self.title
 

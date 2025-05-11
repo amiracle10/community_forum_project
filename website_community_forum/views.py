@@ -14,6 +14,10 @@ from .models import Post, Reply, Category, Event
 from .forms import RegisterForm
 from django.contrib import messages
 from .forms import ReportUserForm
+import logging
+from django.http import HttpResponseBadRequest
+
+logger = logging.getLogger(__name__)
 
 
 def get_common_context():
@@ -25,14 +29,14 @@ def get_common_context():
 def index(request):
     context = get_common_context()
     context['categories'] = Category.objects.all()
-    popular_posts = Post.objects.annotate(comment_count=Count('replies')).order_by('-comment_count')[:3] 
-    
+    popular_posts = Post.objects.annotate(comment_count=Count('replies')).order_by('-comment_count')[:3]
+
     context['popular_posts'] = popular_posts
     return render(request, 'index.html', context)
 
 def forum_category(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
-    posts = Post.objects.filter(category=category).order_by('-created_at')
+    posts = category.posts.all().order_by('-created_at')
     context = get_common_context()
     context.update({
         'category': category,
@@ -94,7 +98,11 @@ def create_post(request):
     if request.method == 'POST':
         if not request.user.is_authenticated:
             return JsonResponse({'error': 'Unauthorized'}, status=401)
-        data = json.loads(request.body)
+        # data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
         category = data.get('category')
         title = data.get('title')
         body = data.get('body')
@@ -109,15 +117,42 @@ def create_post(request):
         return JsonResponse({'message': 'Post created', 'post_id': post.id}, status=201)
     return JsonResponse({'error': 'Invalid request'}, status=405)
 
+# @login_required
+# def post_create(request):
+#     if request.method == 'POST':
+#         title = request.POST.get('title')
+#         body = request.POST.get('body')
+#         category_id = request.POST.get('category_id')
+#         if not all([title, body, category_id]):
+#             return redirect('/')
+#         category = get_object_or_404(Category, id=category_id)
+#         post = Post.objects.create(
+#             title=title,
+#             body=body,
+#             category=category,
+#             author=request.user,
+#         )
+#         return redirect('forum_category', category_slug=category.slug)
+#     return redirect('/')
+
 @login_required
 def post_create(request):
     if request.method == 'POST':
         title = request.POST.get('title')
         body = request.POST.get('body')
         category_id = request.POST.get('category_id')
+
+        # Check for missing data
         if not all([title, body, category_id]):
-            return redirect('/')
-        category = get_object_or_404(Category, id=category_id)
+            return HttpResponseBadRequest("Missing fields.")
+
+        try:
+            # Validate category_id is an actual integer ID
+            category = Category.objects.get(id=int(category_id))
+        except (Category.DoesNotExist, ValueError):
+            return HttpResponseBadRequest("Invalid category.")
+
+        # Now create the post
         post = Post.objects.create(
             title=title,
             body=body,
@@ -125,7 +160,8 @@ def post_create(request):
             author=request.user,
         )
         return redirect('forum_category', category_slug=category.slug)
-    return redirect('/')
+
+    return HttpResponseBadRequest("Invalid request method.")
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
@@ -265,5 +301,5 @@ def report_user(request, reported_user_id):
         else:
             messages.error(request, 'There was an error submitting the report.')
     else:
-      form = ReportUserForm
+      form = ReportUserForm()
     return render(request, 'report_user.html', {'form': form, 'reported_user': reported_user})
